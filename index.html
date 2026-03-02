@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When Boards Freeze | CEO Succession Research</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <style>
+        :root {
+            --ss-navy: #003a79;
+            --ss-dark-navy: #0a1c3d;
+            --ss-green: #338441;
+            --ss-light-blue: #a5dfdb;
+            --ss-yellow: #fbcc11;
+            --ss-burgundy: #971c0b;
+            --ss-gray: #6f6771;
+            --ss-dark-green: #014333;
+            --ss-teal: #2eaf99;
+            --ss-orange: #f16f03;
+            --ss-dark-burgundy: #54120b;
+            --ss-vibrant-yellow: #ffed50;
+            --ss-pink: #fac8c3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #2a2a2a;
+            line-height: 1.65;
+            background: #fff;
+        }
+
+        /* ── Cover ── */
+        .cover {
+            background: linear-gradient(135deg, var(--ss-dark-navy) 0%, var(--ss-navy) 60%, #00508a 100%);
+            color: #fff;
+            padding: 80px 60px 60px;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            overflow: hidden;
+        }
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            right: -120px;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: rgba(165,223,219,0.06);
+        }
+        .cover::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: rgba(251,204,17,0.04);
+        }
+        .cover-label {
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--ss-light-blue);
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .cover h1 {
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 1.15;
+            max-width: 720px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .cover-subtitle {
+            font-size: 20px;
+            color: rgba(255,255,255,0.75);
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        .cover-meta {
+            display: flex;
+            gap: 40px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            position: relative;
+            z-index: 1;
+        }
+        .cover-meta strong { color: rgba(255,255,255,0.9); font-weight: 700; }
+
+        /* ── Layout ── */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* ── Key Stats Banner ── */
+        .stats-banner {
+            background: #f7f8fa;
+            border-bottom: 1px solid #e8e9ec;
+            padding: 48px 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+        .stat-card {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--ss-navy);
+            line-height: 1.1;
+        }
+        .stat-number.alert { color: var(--ss-burgundy); }
+        .stat-number.positive { color: var(--ss-green); }
+        .stat-label {
+            font-size: 13px;
+            color: var(--ss-gray);
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        /* ── Sections ── */
+        section {
+            padding: 56px 0;
+        }
+        section + section {
+            border-top: 1px solid #e8e9ec;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--ss-navy);
+            margin-bottom: 8px;
+            line-height: 1.25;
+        }
+        h2 .section-num {
+            color: var(--ss-teal);
+            margin-right: 4px;
+        }
+        .section-intro {
+            font-size: 16px;
+            color: var(--ss-gray);
+            margin-bottom: 32px;
+            max-width: 680px;
+        }
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ss-dark-navy);
+            margin: 36px 0 12px;
+        }
+        p {
+            margin-bottom: 16px;
+            font-size: 15.5px;
+            color: #333;
+        }
+
+        /* ── Executive Summary ── */
+        .exec-summary {
+            background: var(--ss-navy);
+            color: #fff;
+            padding: 56px 0;
+        }
+        .exec-summary h2 { color: #fff; margin-bottom: 24px; }
+        .exec-summary p { color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.7; }
+        .exec-summary .key-finding {
+            background: rgba(255,255,255,0.08);
+            border-left: 4px solid var(--ss-yellow);
+            padding: 20px 24px;
+            margin: 28px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .exec-summary .key-finding p {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* ── Timeline ── */
+        .timeline-visual {
+            position: relative;
+            padding: 40px 0;
+            margin: 32px 0;
+        }
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #dce0e4;
+            transform: translateY(-50%);
+        }
+        .timeline-events {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+        .timeline-event {
+            text-align: center;
+            flex: 1;
+        }
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--ss-navy);
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px var(--ss-navy);
+            margin: 0 auto 12px;
+        }
+        .timeline-dot.crisis { background: var(--ss-burgundy); box-shadow: 0 0 0 2px var(--ss-burgundy); }
+        .timeline-dot.reversion { background: var(--ss-green); box-shadow: 0 0 0 2px var(--ss-green); }
+        .timeline-year {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ss-navy);
+        }
+        .timeline-year.crisis { color: var(--ss-burgundy); }
+        .timeline-year.reversion { color: var(--ss-green); }
+        .timeline-desc {
+            font-size: 12px;
+            color: var(--ss-gray);
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+
+        /* ── Charts ── */
+        .chart-container {
+            background: #fff;
+            border: 1px solid #e8e9ec;
+            border-radius: 8px;
+            padding: 32px;
+            margin: 24px 0 32px;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ss-dark-navy);
+            margin-bottom: 4px;
+        }
+        .chart-subtitle {
+            font-size: 13px;
+            color: var(--ss-gray);
+            margin-bottom: 20px;
+        }
+        .chart-canvas-wrap {
+            position: relative;
+            height: 340px;
+        }
+        .chart-canvas-wrap canvas {
+            max-height: 340px;
+        }
+
+        /* Dual axis chart layout */
+        .chart-dual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .chart-dual .chart-container { margin: 0; }
+
+        /* ── Insight Callout ── */
+        .insight {
+            background: #f0f7ff;
+            border-left: 4px solid var(--ss-navy);
+            padding: 20px 24px;
+            margin: 24px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .insight p { margin: 0; color: var(--ss-dark-navy); font-size: 15px; }
+        .insight strong { color: var(--ss-navy); }
+
+        .insight.warning {
+            background: #fef6f5;
+            border-left-color: var(--ss-burgundy);
+        }
+        .insight.warning p { color: var(--ss-dark-burgundy); }
+        .insight.warning strong { color: var(--ss-burgundy); }
+
+        /* ── Comparison Table ── */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0 32px;
+            font-size: 14px;
+        }
+        .comparison-table thead th {
+            background: var(--ss-navy);
+            color: #fff;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .comparison-table thead th:first-child {
+            border-radius: 6px 0 0 0;
+        }
+        .comparison-table thead th:last-child {
+            border-radius: 0 6px 0 0;
+        }
+        .comparison-table tbody td {
+            padding: 11px 16px;
+            border-bottom: 1px solid #e8e9ec;
+        }
+        .comparison-table tbody tr:nth-child(even) {
+            background: #f7f8fa;
+        }
+        .comparison-table .metric-col { font-weight: 700; color: var(--ss-dark-navy); }
+        .val-up { color: var(--ss-burgundy); font-weight: 700; }
+        .val-down { color: var(--ss-green); font-weight: 700; }
+
+        /* ── Mechanism Cards ── */
+        .mechanism-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 24px 0 32px;
+        }
+        .mechanism-card {
+            background: #f7f8fa;
+            border-radius: 8px;
+            padding: 24px;
+            border-top: 3px solid var(--ss-navy);
+        }
+        .mechanism-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ss-navy);
+            margin-bottom: 8px;
+        }
+        .mechanism-card .cite {
+            font-size: 12px;
+            color: var(--ss-teal);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .mechanism-card p { font-size: 14px; margin: 0; color: var(--ss-gray); }
+        .mechanism-card.supply { border-top-color: var(--ss-burgundy); }
+        .mechanism-card.supply h4 { color: var(--ss-burgundy); }
+
+        /* ── Overshoot Indicators ── */
+        .indicators-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 24px 0;
+        }
+        .indicator {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            background: #fef6f5;
+            border-radius: 8px;
+        }
+        .indicator-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--ss-burgundy);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .indicator h4 { font-size: 14px; font-weight: 700; color: var(--ss-dark-burgundy); margin-bottom: 4px; }
+        .indicator p { font-size: 13px; color: var(--ss-gray); margin: 0; }
+
+        /* ── Board Action Items ── */
+        .action-list {
+            margin: 24px 0;
+        }
+        .action-item {
+            display: flex;
+            gap: 20px;
+            padding: 24px 0;
+            border-bottom: 1px solid #e8e9ec;
+        }
+        .action-item:last-child { border-bottom: none; }
+        .action-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--ss-navy);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        .action-item h4 { font-size: 16px; font-weight: 700; color: var(--ss-dark-navy); margin-bottom: 6px; }
+        .action-item p { font-size: 14.5px; margin: 0; }
+
+        /* ── Methodology ── */
+        .methodology {
+            background: #f7f8fa;
+            border-top: 1px solid #e8e9ec;
+        }
+        .methodology p { font-size: 14px; color: var(--ss-gray); }
+        .methodology h3 { font-size: 16px; color: var(--ss-navy); }
+        .source-list {
+            margin: 16px 0 24px;
+        }
+        .source-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e8e9ec;
+        }
+        .source-item:last-child { border-bottom: none; }
+        .source-item strong { color: var(--ss-dark-navy); font-size: 14px; }
+        .source-item p { font-size: 13px; margin: 4px 0 0; }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--ss-dark-navy);
+            color: rgba(255,255,255,0.5);
+            padding: 40px 0;
+            font-size: 13px;
+        }
+        footer .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Print ── */
+        @media print {
+            .cover { min-height: auto; padding: 40px; }
+            .cover h1 { font-size: 32px; }
+            .chart-canvas-wrap { height: 260px; }
+            section { padding: 32px 0; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .cover { padding: 48px 28px 40px; }
+            .cover h1 { font-size: 30px; }
+            .container { padding: 0 24px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+            .chart-dual { grid-template-columns: 1fr; }
+            .mechanism-grid { grid-template-columns: 1fr; }
+            .indicators-grid { grid-template-columns: 1fr; }
+            .cover-meta { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════ COVER ════════ -->
+<header class="cover">
+    <div class="cover-label">CEO Succession Research</div>
+    <h1>When Boards Freeze: How Black Swan Events Distort CEO Succession</h1>
+    <p class="cover-subtitle">The crisis-distortion-reversion cycle behind 2025's record CEO turnover, and what boards should do before the next shock.</p>
+    <div class="cover-meta">
+        <span><strong>Published</strong>&ensp; March 2026</span>
+        <span><strong>Data</strong>&ensp; S&amp;P 1500, 2010 &ndash; 2025</span>
+    </div>
+</header>
+
+<!-- ════════ KEY STATS BANNER ════════ -->
+<div class="stats-banner">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">168</div>
+                <div class="stat-label">New S&amp;P 1500 CEOs in 2025<br>Most since 2010</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number positive">8.5 yr</div>
+                <div class="stat-label">Avg tenure at departure<br>Down from 10.3 yr peak (2021)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">84%</div>
+                <div class="stat-label">First-time CEOs<br>Record high</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number alert">9%</div>
+                <div class="stat-label">Women appointed CEO<br>Down from 15% in 2024</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ════════ EXECUTIVE SUMMARY ════════ -->
+<div class="exec-summary">
+    <div class="container">
+        <h2>Executive Summary</h2>
+        <p>The record-setting CEO turnover of 2025 has been widely interpreted as a structural shift in corporate leadership. This report presents an alternative reading grounded in fifteen years of longitudinal data.</p>
+        <p>The 2025 data do not represent a new era. They represent the predictable back half of a crisis-distortion-reversion cycle triggered by COVID-19. Between 2020 and 2022, boards froze succession activity at rates exceeding any prior recession, holding onto incumbent CEOs, deferring planned transitions, and allowing development pipelines to atrophy.</p>
+        <div class="key-finding">
+            <p>Key finding: 2025's record CEO turnover represents reversion to pre-COVID norms, not a structural shift in corporate leadership. The younger, less experienced incoming class reflects degraded pipelines, not a deliberate generational strategy.</p>
+        </div>
+        <p>The question now is whether the system will settle at pre-crisis norms or overshoot into a new set of distortions. Several indicators suggest the latter.</p>
+    </div>
+</div>
+
+<!-- ════════ SECTION 1: THE PATTERN ════════ -->
+<section>
+    <div class="container">
+        <h2><span class="section-num">01</span> The Pattern: How Black Swan Events Distort CEO Succession</h2>
+        <p class="section-intro">Three crises in twenty-five years have each produced the same recognizable cycle in succession data: freeze, thaw, overshoot.</p>
+
+        <p>CEO succession does not operate in a vacuum. It responds to the same environmental shocks that reshape markets, supply chains, and regulatory landscapes. What makes succession particularly vulnerable to Black Swan events is the combination of high stakes, long time horizons, and the deeply social nature of board decision-making. When uncertainty spikes, these features interact to produce predictable distortions.</p>
+
+        <p>The dot-com bust of 2000-2002 produced a moderate decline in CEO transitions, concentrated in the technology sector, with succession activity normalizing by 2003-2004. The 2008 financial crisis was more severe: transition volume dropped by approximately 32% from pre-crisis levels, consistent with the general finding that transitions fall to their lowest levels in the year after a recession hits bottom. Recovery followed over 2009-2010, with 2010 marking the highest transition volume in a decade.</p>
+
+        <p>COVID-19 was qualitatively different. CEO transitions plunged 61% in the second half of 2020 in the United States, and recovery was slower and more uneven than after either prior crisis. Unlike previous recessions, which primarily suppressed the demand for leadership change, COVID disrupted both the demand side (boards deferring transitions) and the supply side (development pipelines stalling under remote work conditions). This dual disruption extended the cycle by roughly two years compared to the post-2008 pattern.</p>
+
+        <!-- Timeline -->
+        <div class="timeline-visual">
+            <div class="timeline-line"></div>
+            <div class="timeline-events">
+                <div class="timeline-event">
+                    <div class="timeline-dot crisis"></div>
+                    <div class="timeline-year crisis">2000-02</div>
+                    <div class="timeline-desc">Dot-com bust<br>Moderate decline<br>Swift recovery</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-dot reversion"></div>
+                    <div class="timeline-year reversion">2003-04</div>
+                    <div class="timeline-desc">Reversion<br>Volumes normalize</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-dot crisis"></div>
+                    <div class="timeline-year crisis">2008-09</div>
+                    <div class="timeline-desc">Financial crisis<br>32% decline<br>Demand-side shock</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-dot reversion"></div>
+                    <div class="timeline-year reversion">2010</div>
+                    <div class="timeline-desc">Peak rebound<br>Highest volume<br>in a decade</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-dot crisis"></div>
+                    <div class="timeline-year crisis">2020-22</div>
+                    <div class="timeline-desc">COVID-19<br>61% decline (H2 2020)<br>Dual supply + demand</div>
+                </div>
+                <div class="timeline-event">
+                    <div class="timeline-dot reversion"></div>
+                    <div class="timeline-year reversion">2025</div>
+                    <div class="timeline-desc">Record rebound<br>168 transitions<br>Overshoot risk</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>The Mechanism</h3>
+        <p>Four reinforcing dynamics drive the freeze-thaw cycle. Each has an independent theoretical basis, but in practice they operate as a system: threat rigidity triggers the initial freeze, mimetic isomorphism spreads it across the corporate landscape, pipeline disruption degrades the supply of ready candidates, and pent-up demand accumulates until the system snaps back. COVID was unique in activating all four simultaneously, with particular severity on the supply side.</p>
+
+        <div class="mechanism-grid">
+            <div class="mechanism-card">
+                <h4>Threat Rigidity</h4>
+                <span class="cite">Staw, Sandelands &amp; Dutton, 1981</span>
+                <p>Under existential threat, organizations constrict authority upward and default to the familiar. Boards hold onto incumbents rather than risk a transition during maximum uncertainty.</p>
+            </div>
+            <div class="mechanism-card">
+                <h4>Mimetic Isomorphism</h4>
+                <span class="cite">DiMaggio &amp; Powell, 1983</span>
+                <p>Under uncertainty, organizations model behavior on peers they consider legitimate. When enough boards defer succession, deferral becomes the norm.</p>
+            </div>
+            <div class="mechanism-card supply">
+                <h4>Pipeline Disruption</h4>
+                <span class="cite">Unique to COVID in severity</span>
+                <p>Development experiences that produce CEO-ready candidates (P&amp;L rotations, international assignments, stretch roles) were suspended for 2-3 years, degrading the talent supply.</p>
+            </div>
+            <div class="mechanism-card supply">
+                <h4>Pent-Up Demand</h4>
+                <span class="cite">Accumulation effect</span>
+                <p>Performance exits, retirements, and strategic transitions deferred during 2020-2023 accumulated. When conditions eased, the backlog released simultaneously.</p>
+            </div>
+        </div>
+
+        <div class="insight">
+            <p><strong>Why COVID was different:</strong> Prior recessions primarily affected the demand side of succession. COVID affected both demand and supply simultaneously. The demand-side freeze was more severe (61% vs. 32% in 2008), longer in duration (three years vs. eighteen months), and accompanied by a supply-side disruption that had no recent precedent.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ════════ SECTION 2: THE DATA ════════ -->
+<section>
+    <div class="container">
+        <h2><span class="section-num">02</span> The Data: Six Trend Lines, 2010-2025</h2>
+        <p class="section-intro">Each metric tells the same story: pre-COVID baseline, crisis distortion, and reversion. The consistency across six independent trend lines confirms the systemic nature of the pattern.</p>
+
+        <p>The strength of the crisis-distortion-reversion thesis lies not in any single data point but in the convergence of multiple independent metrics. If only transition volume had spiked in 2025, it could be explained by sector-specific dynamics or a handful of large corporate restructurings. If only tenure had reverted, it could reflect natural generational turnover. But when six measures, each capturing a different dimension of succession behavior, tell the same story simultaneously, the systemic explanation becomes difficult to dismiss.</p>
+
+        <p>The table below provides a snapshot comparison across the three periods. The charts that follow trace each metric across the full fifteen-year window, revealing the shape and timing of the cycle in finer detail.</p>
+
+        <!-- Comparison Table -->
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Pre-COVID Baseline<br>(2018-19)</th>
+                    <th>COVID Peak Distortion<br>(2020-21)</th>
+                    <th>Reversion<br>(2025)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="metric-col">Annual Transitions (S&amp;P 1500)</td>
+                    <td>~135-140</td>
+                    <td class="val-down">~105-110 (trough)</td>
+                    <td class="val-up">168 (highest since 2010)</td>
+                </tr>
+                <tr>
+                    <td class="metric-col">Avg Tenure at Departure</td>
+                    <td>~8.5-8.8 years</td>
+                    <td class="val-up">10.3 years (2021 peak)</td>
+                    <td class="val-down">8.5 years</td>
+                </tr>
+                <tr>
+                    <td class="metric-col">Avg Incoming CEO Age</td>
+                    <td>~55.5-55.8</td>
+                    <td class="val-up">~56.2-56.5 (older picks)</td>
+                    <td>54.4</td>
+                </tr>
+                <tr>
+                    <td class="metric-col">First-Time CEOs</td>
+                    <td>~70-72%</td>
+                    <td class="val-down">~62-65%</td>
+                    <td class="val-up">84% (record)</td>
+                </tr>
+                <tr>
+                    <td class="metric-col">Board-Appointed CEOs</td>
+                    <td>~11-12</td>
+                    <td class="val-up">18 (spike in 2020)</td>
+                    <td class="val-up">19 (most since 2020)</td>
+                </tr>
+                <tr>
+                    <td class="metric-col">Women Appointed CEO</td>
+                    <td>~12-15%</td>
+                    <td>Variable</td>
+                    <td class="val-down">9% (down from 15%)</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Transition Volume</h3>
+
+        <!-- Chart 1: Transition Volume -->
+        <div class="chart-container">
+            <div class="chart-title">S&amp;P 1500 CEO Transitions, 2010-2025</div>
+            <div class="chart-subtitle">Annual new CEO appointments. Dashed line indicates pre-COVID baseline.</div>
+            <div class="chart-canvas-wrap">
+                <canvas id="chartVolume"></canvas>
+            </div>
+        </div>
+
+        <p>The trajectory closely mirrors the post-2008 recovery curve, with two notable differences: the trough was deeper and the recovery took longer. The 2010 post-crisis peak and the 2025 post-crisis peak occupy structurally equivalent positions in their respective cycles. The delay of roughly five years (compared to two years post-2008) reflects the dual nature of the COVID shock and the slower thawing of succession pipelines that had been frozen for three years rather than eighteen months.</p>
+
+        <p>Globally, the pattern is consistent. Russell Reynolds reported 234 CEO departures across thirteen major stock indices in 2025, 16% above 2024 and 21% above the eight-year average. The reversion is not a U.S.-specific phenomenon; European markets, which experienced both the COVID shock and the lingering effects of the sovereign debt crisis, show a similar but more compressed curve.</p>
+
+        <h3>Average Tenure at Departure</h3>
+
+        <!-- Chart 2: Tenure -->
+        <div class="chart-container">
+            <div class="chart-title">Average CEO Tenure at Departure (Years), S&amp;P 1500</div>
+            <div class="chart-subtitle">Tenure peaked at 10.3 years in 2021 as boards held onto incumbents, now returned to baseline.</div>
+            <div class="chart-canvas-wrap">
+                <canvas id="chartTenure"></canvas>
+            </div>
+        </div>
+
+        <p>This is the single clearest indicator of the freeze-thaw cycle. The 2021 peak of 10.3 years represents the high-water mark of boards holding onto incumbents during the crisis. Average tenure had fluctuated in a narrow band between 8.5 and 9.0 years for the entire decade preceding COVID. The spike to 10.3 was abrupt and anomalous, and the steady decline back to 8.5 years by 2025 is a textbook reversion to the pre-crisis mean.</p>
+
+        <p>The tenure data also help explain the volume spike. Every additional year that a CEO serves beyond the planned transition window creates a compounding effect: the successor's appointment is deferred, the successor pipeline stalls, and the eventual transition carries more organizational disruption when it finally occurs. The 2020-2021 tenure inflation set the stage for the 2024-2025 volume release.</p>
+
+        <h3>Insider/Outsider Split and Incoming CEO Age</h3>
+
+        <!-- Charts 3 & 4 side by side -->
+        <div class="chart-dual">
+            <div class="chart-container">
+                <div class="chart-title">Insider CEO Appointments (%)</div>
+                <div class="chart-subtitle">S&amp;P 1500, 2018-2025</div>
+                <div class="chart-canvas-wrap">
+                    <canvas id="chartInsider"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Average Age of Incoming CEOs</div>
+                <div class="chart-subtitle">S&amp;P 1500, 2018-2025</div>
+                <div class="chart-canvas-wrap">
+                    <canvas id="chartAge"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <p>The insider rate elevated modestly during 2020-2021, consistent with threat rigidity theory: boards under threat default to familiar, internal candidates. The premium for perceived safety was modest but measurable. By 2025, the insider rate has returned to pre-crisis levels at 60%, though the large-cap split is notable. At 73% insider appointments among the largest companies in 2025, large-cap boards continue to show a stronger preference for internal candidates, likely reflecting both deeper internal pipelines and greater board confidence in their succession planning processes.</p>
+
+        <p>The age and experience data require careful interpretation. During 2020-2021, boards appointed older, more experienced candidates, consistent with threat rigidity. The 2025 reversal to younger ages (54.4, down from 56.5 at the 2021 peak) and a record 84% first-time rate is not the opposite impulse of boards suddenly seeking fresh perspectives. It is the consequence of the pipeline disruption. The candidates who would have been 56-58 years old and fully seasoned in 2025 spent their critical development years in an environment that did not produce the experiences boards traditionally require. Some aged out. Some took roles elsewhere. Some retired early. The pipeline that would have produced the typical incoming class did not function normally for three years, and the 2025 class reflects that gap.</p>
+
+        <h3>Pipeline Health: First-Time CEOs and Board-Appointed Appointments</h3>
+
+        <!-- Chart 5: First-Time CEOs + Board-Appointed -->
+        <div class="chart-container">
+            <div class="chart-title">First-Time CEO Rate &amp; Board-Appointed CEOs, 2018-2025</div>
+            <div class="chart-subtitle">Both metrics signal pipeline health. Elevated values indicate degradation in internal succession readiness.</div>
+            <div class="chart-canvas-wrap">
+                <canvas id="chartPipeline"></canvas>
+            </div>
+        </div>
+
+        <p>These two metrics, viewed together, are the clearest signal of pipeline health in the dataset. Board-appointed CEOs represent an emergency measure: when internal succession pipelines are functioning properly, boards rarely need to reach into their own ranks to fill the CEO role. The 2020 spike to 18 was an immediate crisis response. The 2025 elevation to 19, the highest since that crisis year, indicates that the pipeline disruptions of the COVID years have not fully healed. If board-appointed CEOs remain elevated through 2026-2027, it would suggest that the pipeline damage is structural rather than cyclical, requiring deliberate investment in executive development to repair.</p>
+
+        <p>The first-time CEO rate tells the complementary story from the other side. In a healthy succession environment, 70-75% of incoming CEOs are serving in the role for the first time, with the remainder bringing prior CEO experience from other companies. The 2020-2021 dip to 62-65% reflected boards reaching for experienced, "safe" candidates during the crisis. The 2025 spike to 84% reflects the opposite problem: the pool of experienced, second-time CEO candidates has been depleted, and boards are appointing from a less proven bench.</p>
+
+        <h3>Forced vs. Planned Departures</h3>
+
+        <!-- Chart 6: Forced Departures -->
+        <div class="chart-container">
+            <div class="chart-title">Forced CEO Departures (%), S&amp;P 500</div>
+            <div class="chart-subtitle">Pent-up performance exits released in 2024-2025. Forced successions at highest level since 2011.</div>
+            <div class="chart-canvas-wrap">
+                <canvas id="chartForced"></canvas>
+            </div>
+        </div>
+
+        <p>The Conference Board reported that forced successions at S&amp;P 500 companies reached their highest level since 2011 in 2025. Russell Reynolds found that for the first time, exits from succession outpaced retirements. These data points capture the pent-up demand dynamic in its purest form.</p>
+
+        <p>Performance-based exits that would have occurred organically during 2020-2023 were deferred as boards prioritized stability. By 2025, the accumulated performance concerns could no longer be deferred. Boards acted on three to four years of accumulated evidence simultaneously. The thirty-two CEOs who resigned within a year of activist campaigns in 2025, a record number, reflect external pressure compounding the internal backlog. Activist investors, like boards themselves, had deferred some campaigns during the acute phase of the crisis. The post-crisis environment provided both the opportunity and the ammunition to act.</p>
+    </div>
+</section>
+
+<!-- ════════ SECTION 3: OVERSHOOT RISK ════════ -->
+<section>
+    <div class="container">
+        <h2><span class="section-num">03</span> The Overshoot Risk</h2>
+        <p class="section-intro">The data demonstrate clear reversion to pre-COVID norms. However, several indicators suggest the system may be moving past equilibrium into overcorrection.</p>
+
+        <p>If the data showed a clean reversion to pre-crisis norms, the story would end with Section 2. They do not. The system appears to be overcorrecting, and the interaction between pent-up demand, degraded pipelines, activist pressure, and the loss of diversity gains creates conditions for a new kind of distortion, one driven not by freezing but by urgency.</p>
+
+        <p>The simultaneous release of three to four years of deferred transitions creates a concentration effect. The 168 transitions in 2025 exceed what organic turnover alone would produce. If boards are acting on accumulated concerns rather than current performance, some of these transitions may be reactive rather than strategic. The distinction matters: a reactive transition driven by years of deferred frustration carries different risks than a planned transition executed on its own timeline.</p>
+
+        <div class="indicators-grid">
+            <div class="indicator">
+                <div class="indicator-icon">1</div>
+                <div>
+                    <h4>Pent-Up Demand Concentration</h4>
+                    <p>Three to four years of deferred transitions releasing simultaneously produces a spike exceeding organic turnover. Some transitions may be reactive rather than strategic.</p>
+                </div>
+            </div>
+            <div class="indicator">
+                <div class="indicator-icon">2</div>
+                <div>
+                    <h4>Pipeline Degradation</h4>
+                    <p>84% first-time CEO rate and elevated board appointments suggest boards are selecting from a shallower pool. First-time CEOs carry inherently higher transition risk.</p>
+                </div>
+            </div>
+            <div class="indicator">
+                <div class="indicator-icon">3</div>
+                <div>
+                    <h4>Gender Diversity Regression</h4>
+                    <p>Women CEO appointments fell from 15% to 9%. The pipeline work driving diversity gains (sponsorship, stretch assignments) was precisely what stalled during COVID.</p>
+                </div>
+            </div>
+            <div class="indicator">
+                <div class="indicator-icon">4</div>
+                <div>
+                    <h4>Activist Pressure Amplifier</h4>
+                    <p>A record 32 activist-driven CEO resignations in 2025. External pressure compounds organic pent-up demand, compressing timelines beyond what boards would choose on their own.</p>
+                </div>
+            </div>
+        </div>
+
+        <p>The decline in women appointed as CEO from 15% in 2024 to 9% in 2025 is the most concerning single data point in the 2025 dataset. The progress in gender diversity at the CEO level over the prior decade was driven by deliberate pipeline work: sponsorship programs, stretch assignments, intentional development of diverse successor candidates. That pipeline work was precisely what stalled during COVID. When boards moved from deliberation to urgency in 2025, they reached for what was immediately available, and the diversity gains were among the casualties. If the 9% figure persists or declines further in 2026, it would suggest that the pre-COVID diversity trajectory has been structurally reset, requiring years of renewed pipeline investment to restore.</p>
+
+        <p>The interaction between organic pent-up demand and activist pressure creates the conditions for the most dangerous form of overshoot. Boards that might have managed gradual, well-planned transitions are instead facing compressed timelines under external pressure. The result is a succession environment driven by urgency rather than strategy, with predictable consequences for the quality and diversity of the incoming CEO class.</p>
+
+        <div class="insight warning">
+            <p><strong>The overshoot question is still open.</strong> If transition volume remains elevated through 2026, if first-time CEO failure rates climb, if the gender regression persists, boards will have traded one distortion for another. The next twelve to eighteen months are the critical observation window.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ════════ SECTION 4: IMPLICATIONS ════════ -->
+<section>
+    <div class="container">
+        <h2><span class="section-num">04</span> Implications for Boards</h2>
+        <p class="section-intro">The crisis-distortion-reversion pattern has repeated across three major disruptions in twenty-five years. The mechanism is understood. The question is whether boards will build structural safeguards before the next cycle begins.</p>
+
+        <p>The data presented in this report make a simple but consequential point: boards behave predictably in crises, and the consequences of that predictability compound over time. Threat rigidity, mimetic freezing, pipeline degradation, and pent-up demand are not mysteries. They are well-documented dynamics with well-understood mechanisms. The fact that they continue to produce the same distortion-and-reversion cycle in each successive crisis suggests that most boards have not yet built the structural safeguards necessary to resist them.</p>
+
+        <p>The five implications below are not theoretical. Each addresses a specific vulnerability revealed by the 2020-2025 cycle, and each is actionable in the context of normal board governance processes.</p>
+
+        <div class="action-list">
+            <div class="action-item">
+                <div class="action-num">1</div>
+                <div>
+                    <h4>Build Crisis-Resilient Succession Processes</h4>
+                    <p>Stress-test pipelines against disruption scenarios. What happens if the top two internal candidates become unavailable? What if development rotations are suspended for two years? What if a standard external search cannot be conducted for twelve months? Processes that cannot answer these questions are not crisis-resilient.</p>
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-num">2</div>
+                <div>
+                    <h4>Maintain Emergency Succession Readiness</h4>
+                    <p>Emergency succession should be a standing board practice, not a document reviewed annually. The boards that navigated COVID without freezing had already identified interim options, pre-negotiated retention arrangements, and maintained external candidate relationships. They had choices. The rest had only inertia.</p>
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-num">3</div>
+                <div>
+                    <h4>Resist Mimetic Freezing</h4>
+                    <p>The most dangerous moment in the next crisis will be the point at which a critical mass of peer boards decides to defer, creating social proof that deferral is prudent. Establish decision criteria in advance: under what conditions would a planned transition proceed despite a crisis? Having the answer before the crisis removes the pressure to default to peers.</p>
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-num">4</div>
+                <div>
+                    <h4>Monitor for Overshoot Indicators</h4>
+                    <p>Watch for sustained elevation of transition volume above the 140-150 baseline, elevated first-time CEO failure rates, continued decline in women CEO appointments below 12-15%, and persistent board-appointed CEOs above 10-12. Multiple concurrent signals indicate overcorrection.</p>
+                </div>
+            </div>
+            <div class="action-item">
+                <div class="action-num">5</div>
+                <div>
+                    <h4>Invest in Pipeline Recovery</h4>
+                    <p>The development experiences suspended during 2020-2022 cannot be retroactively supplied. Accelerate rebuilding: identify next-generation candidates, ensure cross-functional enterprise-level experiences, and extend timelines where necessary. The gender diversity regression requires specific, deliberate pipeline investment to prevent the 9% figure from becoming a new baseline.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════ METHODOLOGY ════════ -->
+<section class="methodology">
+    <div class="container">
+        <h2><span class="section-num">05</span> Methodology Note</h2>
+
+        <h3>Data Sources</h3>
+        <div class="source-list">
+            <div class="source-item">
+                <strong>CEO Transitions Database</strong>
+                <p>Annual tracking of CEO appointments and departures across the S&amp;P 500 and S&amp;P 1500. Covers transition volume, tenure, insider/outsider status, age, gender, board-appointed status, and departure circumstances. Longitudinal dataset from 2000 to present; this analysis focuses on 2010-2025.</p>
+            </div>
+            <div class="source-item">
+                <strong>Russell Reynolds Global CEO Turnover Index</strong>
+                <p>Annual tracking across thirteen major stock indices worldwide. Provides global context and cross-market comparison. The 2025 report covers 234 CEO departures globally.</p>
+            </div>
+            <div class="source-item">
+                <strong>The Conference Board CEO Succession Practices Study</strong>
+                <p>Annual analysis of S&amp;P 500 CEO succession, with detailed tracking of forced versus planned departures, interim appointments, and diversity metrics.</p>
+            </div>
+        </div>
+
+        <h3>Universe &amp; Approach</h3>
+        <p>Primary analysis uses the S&amp;P 1500 for statistical power. S&amp;P 500 data are presented where the pattern is clearer or where the metric is only available for the larger index. The report applies a crisis-distortion-reversion framework, comparing three periods: pre-COVID baseline (2018-2019), COVID distortion (2020-2021), and post-COVID reversion (2025).</p>
+
+        <h3>Limitations</h3>
+        <p>Data reflect publicly announced transitions at publicly traded companies. Private company succession is not captured. Trend lines use approximate values where exact figures are proprietary. Analysis is descriptive and correlational; causal attribution to specific mechanisms is based on theoretical consistency rather than experimental evidence.</p>
+    </div>
+</section>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">CEO Succession Research</div>
+            <div>March 2026</div>
+        </div>
+    </div>
+</footer>
+
+<!-- ════════ CHARTS ════════ -->
+<script>
+const SS = {
+    navy: '#003a79',
+    darkNavy: '#0a1c3d',
+    green: '#338441',
+    lightBlue: '#a5dfdb',
+    yellow: '#fbcc11',
+    burgundy: '#971c0b',
+    gray: '#6f6771',
+    teal: '#2eaf99',
+    orange: '#f16f03',
+    pink: '#fac8c3'
+};
+
+/* Shared annotation boxes for crisis periods */
+function crisisAnnotations(startYear, labels) {
+    const idx08Start = labels.indexOf('2008') >= 0 ? labels.indexOf('2008') : null;
+    const idx08End = labels.indexOf('2009') >= 0 ? labels.indexOf('2009') : null;
+    const idxCovStart = labels.indexOf('2020');
+    const idxCovEnd = labels.indexOf('2022') >= 0 ? labels.indexOf('2022') : labels.indexOf('2021');
+
+    const annotations = {};
+    if (idx08Start !== null && idx08End !== null) {
+        annotations.crisis08 = {
+            type: 'box', xMin: idx08Start - 0.5, xMax: idx08End + 0.5,
+            backgroundColor: 'rgba(151,28,11,0.06)', borderWidth: 0,
+            label: { content: '2008 Crisis', display: true, position: 'start',
+                     font: { size: 11, family: 'Arial' }, color: SS.burgundy, padding: 4 }
+        };
+    }
+    if (idxCovStart >= 0) {
+        annotations.crisisCovid = {
+            type: 'box', xMin: idxCovStart - 0.5, xMax: idxCovEnd + 0.5,
+            backgroundColor: 'rgba(151,28,11,0.06)', borderWidth: 0,
+            label: { content: 'COVID', display: true, position: 'start',
+                     font: { size: 11, family: 'Arial' }, color: SS.burgundy, padding: 4 }
+        };
+    }
+    return annotations;
+}
+
+const defaultFont = { family: 'Arial, Helvetica, sans-serif' };
+Chart.defaults.font.family = 'Arial, Helvetica, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = SS.gray;
+
+/* ── Chart 1: Transition Volume ── */
+const volLabels = ['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'];
+const volData   = [160, 140, 135, 130, 135, 130, 135, 140, 135, 140, 105, 107, 120, 130, 140, 168];
+
+new Chart(document.getElementById('chartVolume'), {
+    type: 'bar',
+    data: {
+        labels: volLabels,
+        datasets: [{
+            label: 'CEO Transitions',
+            data: volData,
+            backgroundColor: volLabels.map((y,i) => {
+                if (+y >= 2020 && +y <= 2022) return 'rgba(151,28,11,0.7)';
+                if (+y === 2025) return SS.teal;
+                if (+y === 2010) return SS.green;
+                return SS.navy;
+            }),
+            borderRadius: 3,
+            borderSkipped: false,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            annotation: {
+                annotations: {
+                    baseline: {
+                        type: 'line', yMin: 137, yMax: 137,
+                        borderColor: SS.gray, borderWidth: 1, borderDash: [6,4],
+                        label: { content: 'Pre-COVID baseline (~137)', display: true,
+                                 position: 'start', backgroundColor: 'transparent',
+                                 color: SS.gray, font: { size: 11 }, yAdjust: -12 }
+                    }
+                }
+            }
+        },
+        scales: {
+            y: { beginAtZero: false, min: 80, grid: { color: '#eee' },
+                 title: { display: true, text: 'Number of transitions', color: SS.gray } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+/* ── Chart 2: Tenure ── */
+const tenLabels = ['2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025'];
+const tenData   = [8.5, 8.8, 9.0, 8.7, 8.5, 8.8, 9.0, 8.5, 8.5, 8.8, 9.5, 10.3, 9.8, 9.2, 8.8, 8.5];
+
+new Chart(document.getElementById('chartTenure'), {
+    type: 'line',
+    data: {
+        labels: tenLabels,
+        datasets: [{
+            label: 'Avg Tenure (years)',
+            data: tenData,
+            borderColor: SS.navy,
+            backgroundColor: 'rgba(0,58,121,0.08)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: tenLabels.map(y => (+y===2021 || +y===2025) ? 7 : 4),
+            pointBackgroundColor: tenLabels.map(y => {
+                if (+y===2021) return SS.burgundy;
+                if (+y===2025) return SS.green;
+                return SS.navy;
+            }),
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            annotation: {
+                annotations: {
+                    ...crisisAnnotations(2010, tenLabels),
+                    baseline: {
+                        type: 'line', yMin: 8.65, yMax: 8.65,
+                        borderColor: SS.gray, borderWidth: 1, borderDash: [6,4],
+                        label: { content: 'Pre-COVID avg (~8.65)', display: true,
+                                 position: 'end', backgroundColor: 'transparent',
+                                 color: SS.gray, font: { size: 11 }, yAdjust: -12 }
+                    },
+                    peak: {
+                        type: 'point', xValue: '2021', yValue: 10.3,
+                        backgroundColor: 'transparent', borderWidth: 0,
+                        label: { content: '10.3 yr peak', display: true,
+                                 color: SS.burgundy, font: { size: 12, weight: 'bold' },
+                                 position: 'start', yAdjust: -16, backgroundColor: 'transparent' }
+                    }
+                }
+            }
+        },
+        scales: {
+            y: { min: 7.5, max: 11, grid: { color: '#eee' },
+                 title: { display: true, text: 'Years', color: SS.gray } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+/* ── Chart 3: Insider % ── */
+const insLabels = ['2018','2019','2020','2021','2022','2023','2024','2025'];
+const insData   = [62, 60, 65, 67, 63, 61, 60, 60];
+
+new Chart(document.getElementById('chartInsider'), {
+    type: 'bar',
+    data: {
+        labels: insLabels,
+        datasets: [{
+            label: 'Insider %',
+            data: insData,
+            backgroundColor: insLabels.map(y => (+y>=2020 && +y<=2021) ? SS.burgundy : SS.navy),
+            borderRadius: 3,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            annotation: {
+                annotations: {
+                    baseline: {
+                        type: 'line', yMin: 61, yMax: 61,
+                        borderColor: SS.gray, borderWidth: 1, borderDash: [6,4]
+                    }
+                }
+            }
+        },
+        scales: {
+            y: { min: 55, max: 72, grid: { color: '#eee' },
+                 title: { display: true, text: '% Insider', color: SS.gray } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+/* ── Chart 4: Age ── */
+const ageLabels = ['2018','2019','2020','2021','2022','2023','2024','2025'];
+const ageData   = [55.5, 55.8, 56.2, 56.5, 56.0, 55.8, 55.8, 54.4];
+
+new Chart(document.getElementById('chartAge'), {
+    type: 'line',
+    data: {
+        labels: ageLabels,
+        datasets: [{
+            label: 'Average Age',
+            data: ageData,
+            borderColor: SS.navy,
+            backgroundColor: 'rgba(0,58,121,0.08)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: ageLabels.map(y => (+y===2021 || +y===2025) ? 7 : 4),
+            pointBackgroundColor: ageLabels.map(y => {
+                if (+y===2021) return SS.burgundy;
+                if (+y===2025) return SS.teal;
+                return SS.navy;
+            }),
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { min: 53.5, max: 57.5, grid: { color: '#eee' },
+                 title: { display: true, text: 'Age (years)', color: SS.gray } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+/* ── Chart 5: First-Time CEO + Board Appointed (dual axis) ── */
+const pipLabels = ['2018','2019','2020','2021','2022','2023','2024','2025'];
+const ftData    = [72, 70, 65, 62, 68, 72, 78, 84];
+const baData    = [11, 12, 18, 15, 13, 12, 14, 19];
+
+new Chart(document.getElementById('chartPipeline'), {
+    type: 'bar',
+    data: {
+        labels: pipLabels,
+        datasets: [
+            {
+                label: 'First-Time CEOs (%)',
+                data: ftData,
+                backgroundColor: SS.navy,
+                borderRadius: 3,
+                yAxisID: 'y',
+                order: 2
+            },
+            {
+                label: 'Board-Appointed CEOs',
+                data: baData,
+                type: 'line',
+                borderColor: SS.burgundy,
+                backgroundColor: SS.burgundy,
+                pointRadius: 5,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                borderWidth: 2.5,
+                tension: 0.3,
+                yAxisID: 'y1',
+                order: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true, position: 'top',
+                labels: { usePointStyle: true, padding: 20, font: { size: 12 } }
+            }
+        },
+        scales: {
+            y:  { position: 'left', min: 50, max: 90, grid: { color: '#eee' },
+                  title: { display: true, text: 'First-Time CEO %', color: SS.navy } },
+            y1: { position: 'right', min: 5, max: 25, grid: { drawOnChartArea: false },
+                  title: { display: true, text: 'Board-Appointed Count', color: SS.burgundy } },
+            x:  { grid: { display: false } }
+        }
+    }
+});
+
+/* ── Chart 6: Forced Departures ── */
+const frcLabels = ['2018','2019','2020','2021','2022','2023','2024','2025'];
+const frcData   = [12, 14, 8, 10, 12, 15, 18, 22];
+
+new Chart(document.getElementById('chartForced'), {
+    type: 'line',
+    data: {
+        labels: frcLabels,
+        datasets: [{
+            label: 'Forced Departure %',
+            data: frcData,
+            borderColor: SS.burgundy,
+            backgroundColor: 'rgba(151,28,11,0.08)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: frcLabels.map(y => (+y===2020 || +y===2025) ? 7 : 4),
+            pointBackgroundColor: frcLabels.map(y => {
+                if (+y===2020) return SS.green;
+                if (+y===2025) return SS.burgundy;
+                return SS.burgundy;
+            }),
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            borderWidth: 2.5,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            annotation: {
+                annotations: {
+                    crisisCovid: {
+                        type: 'box', xMin: 1.5, xMax: 3.5,
+                        backgroundColor: 'rgba(151,28,11,0.05)', borderWidth: 0,
+                        label: { content: 'COVID', display: true, position: 'start',
+                                 font: { size: 11 }, color: SS.burgundy, padding: 4 }
+                    },
+                    lowPoint: {
+                        type: 'point', xValue: '2020', yValue: 8,
+                        backgroundColor: 'transparent', borderWidth: 0,
+                        label: { content: 'Boards defer exits', display: true,
+                                 color: SS.green, font: { size: 11, weight: 'bold' },
+                                 yAdjust: 20, backgroundColor: 'transparent' }
+                    },
+                    highPoint: {
+                        type: 'point', xValue: '2025', yValue: 22,
+                        backgroundColor: 'transparent', borderWidth: 0,
+                        label: { content: 'Highest since 2011', display: true,
+                                 color: SS.burgundy, font: { size: 11, weight: 'bold' },
+                                 yAdjust: -18, backgroundColor: 'transparent' }
+                    }
+                }
+            }
+        },
+        scales: {
+            y: { min: 0, max: 28, grid: { color: '#eee' },
+                 title: { display: true, text: 'Forced departures (%)', color: SS.gray } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
